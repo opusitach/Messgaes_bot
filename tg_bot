@@ -1,0 +1,107 @@
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+
+# Вставьте сюда ваш токен API
+BOT_TOKEN = "7935812373:AAG1fCLnEQBxyGUuJSe4EgFtXFzB01FHaiE"  # Замените на токен вашего бота от BotFather
+
+# Telegram ID пользователя, сообщения которого игнорируются
+EXCLUDED_USER_ID = 6444735563  # Замените на реальный ID пользователя для исключения
+
+# Инициализация глобальных переменных
+message_count = 0
+next_milestone = 20000  # Первый порог для уведомления
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Отправляет приветственное сообщение при старте."""
+    await update.message.reply_text('Привет! Я бот для подсчета сообщений. Добавьте меня в чат, чтобы я начал считать.')
+
+async def count_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Обрабатывает каждое сообщение и обновляет счетчик, если отправитель не исключен."""
+    global message_count, next_milestone
+
+    # Проверяем, что объект update.message существует
+    if update.message and update.message.from_user:
+        user_id = update.message.from_user.id
+
+        # Проверяем, является ли отправитель исключенным пользователем
+        if user_id != EXCLUDED_USER_ID:
+            message_count += 1
+
+            # Проверка на достижение порога
+            if message_count >= next_milestone:
+                await update.message.reply_text(f'Поздравляем! Общее количество сообщений достигло {message_count}.')
+                next_milestone += 10000  # Устанавливаем следующий порог на +10,000 сообщений
+
+async def get_count(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Команда /count для отображения текущего количества сообщений."""
+    await update.message.reply_text(f'Общее количество сообщений: {message_count}')
+
+
+async def discord_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Команда /discord добавляет 100 сообщений к общему количеству."""
+    global message_count, next_milestone
+    message_count += 100
+    await update.message.reply_text('К общему числу сообщений добавлено 100 (команда Discord).')
+
+    # Проверка на достижение порога после команды /discord
+    if message_count >= next_milestone:
+        await update.message.reply_text(f'Красавцы! Уже {message_count} сообщений. Поднажмите!')
+        next_milestone += 10000
+
+async def erotric_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Команда /erotic добавляет 500 сообщений к общему количеству."""
+    global message_count, next_milestone
+    message_count += 500
+    await update.message.reply_text('К общему числу сообщений добавлено 500 (команда erotic).')
+
+    # Проверка на достижение порога после команды /erotic
+    if message_count >= next_milestone:
+        await update.message.reply_text(f'Поздравляем! Общее количество сообщений достигло {message_count}.')
+        next_milestone += 10000
+
+async def night_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Команда /night добавляет 1000 сообщений к общему количеству."""
+    global message_count, next_milestone
+    message_count += 1000
+    await update.message.reply_text('К общему числу сообщений добавлено 1000 (команда night).')
+
+    # Проверка на достижение порога после команды /erotic
+    if message_count >= next_milestone:
+        await update.message.reply_text(f'Поздравляем! Общее количество сообщений достигло {message_count}.')
+        next_milestone += 10000
+
+async def set_count(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Команда /set_count для установки начального количества сообщений."""
+    global message_count, next_milestone
+    try:
+        # Пытаемся получить новое значение для счетчика из аргументов команды
+        new_count = int(context.args[0])
+        message_count = new_count
+        await update.message.reply_text(f'Начальное количество сообщений установлено на {message_count}.')
+
+        # Обновляем следующий порог уведомления
+        next_milestone = (message_count // 10000 + 1) * 10000 if message_count >= 20000 else 20000
+    except (IndexError, ValueError):
+        # Обработка ошибок, если аргумент отсутствует или некорректен
+        await update.message.reply_text('Пожалуйста, укажите корректное начальное количество сообщений. Например, /set_count 1000.')
+
+def main():
+    # Создаем приложение
+    application = Application.builder().token(BOT_TOKEN).build()
+
+    # Обработчики команд
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("count", get_count))
+    application.add_handler(CommandHandler("discord", discord_command))
+    application.add_handler(CommandHandler("set_count", set_count))
+    application.add_handler(CommandHandler("erotic", erotric_command))
+    application.add_handler(CommandHandler("night", night_command))
+    
+    # Обработчик текстовых сообщений для подсчета
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, count_message))
+
+    # Запуск бота
+    application.run_polling()
+
+if __name__ == '__main__':
+    main()
