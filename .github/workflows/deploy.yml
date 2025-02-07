@@ -1,0 +1,28 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # Указывай свою основную ветку
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Выбираем Ubuntu как окружение для CI
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Шаг для клонирования репозитория
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.Deploy_ssh_key }}  # Используем приватный ключ из секретов GitHub
+
+    - name: Copy files to server
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@16.171.182.173 "mkdir -p /home/ubuntu/Messgaes_bot"
+        scp -r * ubuntu@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
+
+    - name: Restart bot
+      run: |
+        ssh -o StrictHostKeyChecking=no ubuntu@16.171.182.173 "cd /home/ubuntu/Messgaes_bot && git pull && sudo systemctl restart tg_bot"  # Перезапускаем сервис
