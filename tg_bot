@@ -12,11 +12,11 @@ message_count = 0
 next_milestone = 20000  # Первый порог для уведомления
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Отправляет приветственное сообщение при старте."""
-    await update.message.reply_text('Привет! Я бот для подсчета сообщений. Добавьте меня в чат, чтобы я начал считать.')
+    #Отправляет приветственное сообщение при старте
+    await update.message.reply_text('Здарова, я бот-аутист, люблю считать и радовать Алису')
 
 async def count_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Обрабатывает каждое сообщение и обновляет счетчик, если отправитель не исключен."""
+    #Обрабатывает каждое сообщение и обновляет счетчик, если отправитель не исключен
     global message_count, next_milestone
 
     # Проверяем, что объект update.message существует
@@ -29,19 +29,19 @@ async def count_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
             # Проверка на достижение порога
             if message_count >= next_milestone:
-                await update.message.reply_text(f'Поздравляем! Общее количество сообщений достигло {message_count}.')
+                await update.message.reply_text(f'Ваще супер! уже {message_count} сообщений.')
                 next_milestone += 10000  # Устанавливаем следующий порог на +10,000 сообщений
 
 async def get_count(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Команда /count для отображения текущего количества сообщений."""
-    await update.message.reply_text(f'Общее количество сообщений: {message_count}')
+    #Команда /count для отображения текущего количества сообщений
+    await update.message.reply_text(f'Уже набрали: {message_count} сообщений')
 
 
 async def discord_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Команда /discord добавляет 100 сообщений к общему количеству."""
+    #Команда /discord добавляет 100 сообщений к общему количеству
     global message_count, next_milestone
     message_count += 100
-    await update.message.reply_text('К общему числу сообщений добавлено 100 (команда Discord).')
+    await update.message.reply_text('К Найс погуляли голубки (команда Discord).')
 
     # Проверка на достижение порога после команды /discord
     if message_count >= next_milestone:
@@ -49,7 +49,7 @@ async def discord_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         next_milestone += 10000
 
 async def erotric_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Команда /erotic добавляет 500 сообщений к общему количеству."""
+    #Команда /erotic добавляет 500 сообщений к общему количеству
     global message_count, next_milestone
     message_count += 500
     await update.message.reply_text('К общему числу сообщений добавлено 500 (команда erotic).')
@@ -60,10 +60,10 @@ async def erotric_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         next_milestone += 10000
 
 async def night_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Команда /night добавляет 1000 сообщений к общему количеству."""
+    #Команда /night добавляет 1000 сообщений к общему количеству
     global message_count, next_milestone
     message_count += 1000
-    await update.message.reply_text('К общему числу сообщений добавлено 1000 (команда night).')
+    await update.message.reply_text('К Добавил 1000 за ночь:) (команда night).')
 
     # Проверка на достижение порога после команды /erotic
     if message_count >= next_milestone:
@@ -71,7 +71,7 @@ async def night_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         next_milestone += 10000
 
 async def set_count(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Команда /set_count для установки начального количества сообщений."""
+    #Команда /set_count для установки начального количества сообщений
     global message_count, next_milestone
     try:
         # Пытаемся получить новое значение для счетчика из аргументов команды
@@ -92,7 +92,7 @@ def main():
     # Обработчики команд
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("count", get_count))
-    application.add_handler(CommandHandler("discord", discord_command))
+    application.add_handler(CommandHandler("time", discord_command))
     application.add_handler(CommandHandler("set_count", set_count))
     application.add_handler(CommandHandler("erotic", erotric_command))
     application.add_handler(CommandHandler("night", night_command))
