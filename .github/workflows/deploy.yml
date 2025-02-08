@@ -20,9 +20,9 @@ jobs:
 
     - name: Copy files to server
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@16.171.182.173 "mkdir -p /home/ubuntu/Messgaes_bot"
-        scp -r * ubuntu@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
+        ssh -o StrictHostKeyChecking=no ec2-user@16.171.182.173 "mkdir -p /home/ubuntu/Messgaes_bot"
+        scp -r * ec2-user@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
 
     - name: Restart bot
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@16.171.182.173 "cd /home/ubuntu/Messgaes_bot && git pull && sudo systemctl restart tg_bot"  # Перезапускаем сервис
+        ssh -o StrictHostKeyChecking=no ec2-user@16.171.182.173 "cd /home/ubuntu/Messgaes_bot && git pull && sudo systemctl restart tg_bot"  # Перезапускаем сервис
