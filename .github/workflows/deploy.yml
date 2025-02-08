@@ -16,7 +16,7 @@ jobs:
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.Deploy_ssh_key }}  # Используем приватный ключ из секретов GitHub
+        ssh-private-key: ${{ secrets.DEPLOY_KEY_SSH }}  # Используем приватный ключ из секретов GitHub
 
     - name: Copy files to server
       run: |
