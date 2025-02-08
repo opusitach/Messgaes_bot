@@ -15,15 +15,15 @@ jobs:
 
     - name: Set up SSH
       run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519  # Загружаем SSH ключ из секретов
-        chmod 600 ~/.ssh/id_ed25519  # Устанавливаем правильные права на ключ
-        ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts  # Добавляем публичный ключ сервера в known_hosts
+        mkdir -p ~/.ssh  # Создаем директорию .ssh
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519  # Загружаем приватный ключ из секретов GitHub
+        chmod 600 ~/.ssh/id_ed25519  # Устанавливаем права на приватный ключ
+        ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts  # Добавляем публичный ключ хоста в known_hosts
         chmod 600 ~/.ssh/known_hosts  # Устанавливаем права для файла known_hosts
 
     - name: Copy files to server
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ubuntu@16.171.182.173 "mkdir -p /home/ubuntu/Messgaes_bot"  # Создаем папку на сервере
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ubuntu@16.171.182.173 "mkdir -p /home/ubuntu/Messgaes_bot"
         scp -i ~/.ssh/id_ed25519 -r * ubuntu@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
 
     - name: Restart bot
