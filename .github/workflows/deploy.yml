@@ -14,18 +14,19 @@ jobs:
       uses: actions/checkout@v2  # Шаг для клонирования репозитория
 
     - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh  # Создаем директорию .ssh
-        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519  # Загружаем приватный ключ из секретов GitHub
-        chmod 600 ~/.ssh/id_ed25519  # Устанавливаем права на приватный ключ
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}  # Используем приватный ключ из секретов GitHub
 
-        # Добавляем публичный ключ хоста в known_hosts, чтобы избежать ошибки "Host key verification failed"
-        ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts  # Используем правильный IP сервера
-        chmod 600 ~/.ssh/known_hosts  # Устанавливаем права для файла known_hosts
+    - name: Set up known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts  # Добавляем публичный ключ сервера
+        chmod 600 ~/.ssh/known_hosts  # Устанавливаем правильные разрешения на файл known_hosts
 
     - name: Copy files to server
       run: |
-        scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no -r * ubuntu@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
+        scp -r * ubuntu@16.171.182.173:/home/ubuntu/Messgaes_bot  # Копируем файлы на сервер
 
     - name: Restart bot
       run: |
