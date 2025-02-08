@@ -28,7 +28,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no \
             ubuntu@16.171.182.173 \
-            "cd /home/ubuntu/Messages_bot && \
+            "cd /home/ubuntu/Messgaes_bot && \
             git fetch origin main && \
             git reset --hard origin/main && \
             sudo systemctl restart tg_bot"
