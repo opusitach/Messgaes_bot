@@ -13,7 +13,7 @@ next_milestone = 20000  # Первый порог для уведомления
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #Отправляет приветственное сообщение при старте
-    await update.message.reply_text('Здарова, я бот-аутист, люблю считать и радовать Алису')
+    await update.message.reply_text('Здарова, я бот-аутист, люблю считать и радовать Алисуу')
 
 async def count_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #Обрабатывает каждое сообщение и обновляет счетчик, если отправитель не исключен
