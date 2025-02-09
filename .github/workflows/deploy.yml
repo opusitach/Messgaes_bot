@@ -18,9 +18,12 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-    - name: Set up known hosts
+    - name: Configure SSH access
       run: |
         mkdir -p ~/.ssh
+        # Добавляем fingerprint GitHub
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        # Добавляем fingerprint EC2 сервера
         ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts
         chmod 600 ~/.ssh/known_hosts
 
@@ -28,7 +31,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no \
             ubuntu@16.171.182.173 \
-            "cd /home/ubuntu/Messgaes_bot && \
-            git fetch origin main && \
-            git reset --hard origin/main && \
+            "cd /home/ubuntu/Messages_bot && \
+            git config --global --add safe.directory /home/ubuntu/Messgaes_bot && \
+            GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git fetch origin main && \
+            GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git reset --hard origin/main && \
             sudo systemctl restart tg_bot"
