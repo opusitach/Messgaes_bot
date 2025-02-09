@@ -21,18 +21,18 @@ jobs:
     - name: Configure SSH access
       run: |
         mkdir -p ~/.ssh
-        # Добавляем fingerprint GitHub
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-        # Добавляем fingerprint EC2 сервера
         ssh-keyscan -H 16.171.182.173 >> ~/.ssh/known_hosts
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
         chmod 600 ~/.ssh/known_hosts
 
-    - name: Deploy and restart service
+    - name: Force deploy and restart
       run: |
-        ssh -o StrictHostKeyChecking=no \
-            ubuntu@16.171.182.173 \
-            "cd /home/ubuntu/Messgaes_bot && \
-            git config --global --add safe.directory /home/ubuntu/Messgaes_bot && \
-            GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git fetch origin main && \
-            GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git reset --hard origin/main && \
-            sudo systemctl restart tg_bot"
+        ssh -o StrictHostKeyChecking=no ubuntu@16.171.182.173 << 'EOF'
+        cd /home/ubuntu/Messgaes_bot
+        git fetch --force origin main
+        git reset --hard origin/main
+        git clean -fd
+        sudo systemctl stop tg_bot
+        sudo systemctl start tg_bot
+        sudo systemctl status tg_bot
+        EOF
