@@ -31,7 +31,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no \
             ubuntu@16.171.182.173 \
-            "cd /home/ubuntu/Messages_bot && \
+            "cd /home/ubuntu/Messgaes_bot && \
             git config --global --add safe.directory /home/ubuntu/Messgaes_bot && \
             GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git fetch origin main && \
             GIT_SSH_COMMAND='ssh -i ~/.ssh/github_key' git reset --hard origin/main && \
